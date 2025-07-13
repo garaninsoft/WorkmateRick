@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.ksp)
+//    id 'com.google.devtools.ksp' version '2.1.21-2.0.1'
 }
 
 android {
@@ -28,12 +30,14 @@ android {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
     }
-    kotlinOptions {
-        jvmTarget = '11'
-    }
+
     buildFeatures {
         compose true
     }
+}
+
+kotlin {
+    jvmToolchain(11)
 }
 
 dependencies {
@@ -53,4 +57,25 @@ dependencies {
     androidTestImplementation libs.androidx.ui.test.junit4
     debugImplementation libs.androidx.ui.tooling
     debugImplementation libs.androidx.ui.test.manifest
+
+    // Coil for images
+    implementation libs.coil.compose
+
+    // Retrofit
+    implementation libs.retrofit
+    implementation libs.converter.gson
+
+    // Room
+    implementation libs.androidx.room.runtime
+    ksp libs.room.compiler
+    implementation libs.androidx.room.ktx
+
+    // Coroutines
+    implementation libs.kotlinx.coroutines.core
+    implementation libs.kotlinx.coroutines.android
+
+    // Hilt
+    implementation libs.hilt.android
+    ksp libs.hilt.compiler
+    implementation libs.androidx.hilt.navigation.compose
 }
