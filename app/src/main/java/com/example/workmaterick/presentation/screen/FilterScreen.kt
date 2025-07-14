@@ -24,8 +24,7 @@ import androidx.navigation.NavController
 
 @Composable
 fun FilterScreen(
-    navController: NavController,
-    viewModel: CharacterListViewModel = viewModel()
+    navController: NavController
 ) {
     var selectedStatus by remember { mutableStateOf<String?>(null) }
     var selectedGender by remember { mutableStateOf<String?>(null) }

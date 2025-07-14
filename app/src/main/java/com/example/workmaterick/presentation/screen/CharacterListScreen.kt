@@ -32,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.google.accompanist.swiperefresh.SwipeRefresh
@@ -40,7 +41,7 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 @Composable
 fun CharacterListScreen(
     navController: NavController,
-    viewModel: CharacterListViewModel = viewModel()
+    viewModel: CharacterListViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsState()
     val isRefreshing = state is UiState.Loading
@@ -187,7 +188,9 @@ fun CharacterListScreen(
                             verticalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
                             items(characters) { character ->
-                                CharacterCard(character)
+                                CharacterCard(character){
+                                    navController.navigate("character_detail/${character.id}")
+                                }
                             }
                         }
                     }

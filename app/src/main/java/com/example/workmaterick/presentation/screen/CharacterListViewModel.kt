@@ -3,12 +3,15 @@ package com.example.workmaterick.presentation.screen
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.workmaterick.data.api.RickAndMortyApi
 import com.example.workmaterick.data.model.toDomain
 import com.example.workmaterick.di.NetworkModule
 import com.example.workmaterick.domain.model.Character
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 sealed class UiState {
     object Loading : UiState()
@@ -16,8 +19,10 @@ sealed class UiState {
     data class Error(val message: String) : UiState()
 }
 
-class CharacterListViewModel(
-    savedStateHandle: SavedStateHandle
+@HiltViewModel
+class CharacterListViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
+    private val api: RickAndMortyApi
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
@@ -65,7 +70,7 @@ class CharacterListViewModel(
         _uiState.value = UiState.Loading
         viewModelScope.launch {
             try {
-                val response = NetworkModule.api.getAllCharacters(
+                val response = api.getAllCharacters(
                     page = currentPage,
                     name = name,
                     status = status,

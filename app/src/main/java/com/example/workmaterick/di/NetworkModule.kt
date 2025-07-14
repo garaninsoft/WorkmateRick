@@ -1,29 +1,40 @@
 package com.example.workmaterick.di
 
 import com.example.workmaterick.data.api.RickAndMortyApi
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
+@Module
+@InstallIn(SingletonComponent::class)
 object NetworkModule {
 
-    private const val BASE_URL = "https://rickandmortyapi.com/api/"
+    @Provides
+    @Singleton
+    fun provideHttpClient(): OkHttpClient =
+        OkHttpClient.Builder()
+            .addInterceptor(HttpLoggingInterceptor().apply {
+                level = HttpLoggingInterceptor.Level.BODY
+            })
+            .build()
 
-    private val logging = HttpLoggingInterceptor().apply {
-        setLevel(HttpLoggingInterceptor.Level.BODY)
-    }
-
-    private val httpClient = OkHttpClient.Builder()
-        .addInterceptor(logging)
-        .build()
-
-    val api: RickAndMortyApi by lazy {
+    @Provides
+    @Singleton
+    fun provideRetrofit(client: OkHttpClient): Retrofit =
         Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .client(httpClient)
+            .baseUrl("https://rickandmortyapi.com/api/")
+            .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-            .create(RickAndMortyApi::class.java)
-    }
+
+    @Provides
+    @Singleton
+    fun provideRickAndMortyApi(retrofit: Retrofit): RickAndMortyApi =
+        retrofit.create(RickAndMortyApi::class.java)
 }

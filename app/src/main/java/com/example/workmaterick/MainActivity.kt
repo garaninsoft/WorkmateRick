@@ -13,7 +13,9 @@ import androidx.navigation.compose.rememberNavController
 import com.example.workmaterick.presentation.navigation.AppNavGraph
 import com.example.workmaterick.presentation.screen.CharacterListScreen
 import com.example.workmaterick.ui.theme.WorkmateRickTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

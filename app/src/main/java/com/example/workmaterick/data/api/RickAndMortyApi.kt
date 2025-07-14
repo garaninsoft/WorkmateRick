@@ -1,5 +1,6 @@
 package com.example.workmaterick.data.api
 
+import com.example.workmaterick.data.model.CharacterDto
 import com.example.workmaterick.data.model.CharacterResponseDto
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -19,5 +20,5 @@ interface RickAndMortyApi {
     @GET("character/{id}")
     suspend fun getCharacterById(
         @Path("id") id: Int
-    ): CharacterResponseDto
+    ): CharacterDto
 }

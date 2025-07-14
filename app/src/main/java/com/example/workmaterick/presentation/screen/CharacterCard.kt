@@ -17,12 +17,12 @@ import coil.compose.AsyncImage
 import com.example.workmaterick.domain.model.Character
 
 @Composable
-fun CharacterCard(character: Character) {
+fun CharacterCard(character: Character, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .aspectRatio(1f)
-            .clickable { /* TODO: переход к деталям */ },
+            .clickable { onClick() },
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Column {
