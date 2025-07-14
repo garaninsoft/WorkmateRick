@@ -9,6 +9,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.rememberNavController
+import com.example.workmaterick.presentation.navigation.AppNavGraph
 import com.example.workmaterick.presentation.screen.CharacterListScreen
 import com.example.workmaterick.ui.theme.WorkmateRickTheme
 
@@ -18,24 +20,9 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MaterialTheme {
-                CharacterListScreen()
+                val navController = rememberNavController()
+                AppNavGraph(navController)
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    WorkmateRickTheme {
-        Greeting("Android")
     }
 }
