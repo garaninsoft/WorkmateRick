@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Button
@@ -44,6 +43,7 @@ fun CharacterListScreen(
 ) {
     val state by viewModel.uiState.collectAsState()
     val isRefreshing = state is UiState.Loading
+    val isAppending by viewModel.isAppending.collectAsState()
 
     var query by remember { mutableStateOf("") }
 
@@ -52,13 +52,14 @@ fun CharacterListScreen(
             value = query,
             onValueChange = {
                 query = it
-                viewModel.loadCharacters(name = query)
+                viewModel.loadCharacters(name = query, reset = true)
             },
             label = { Text("Поиск по имени") },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp)
         )
+
         Button(
             onClick = { navController.navigate("filter_screen") },
             modifier = Modifier
@@ -68,12 +69,9 @@ fun CharacterListScreen(
             Text("Фильтр")
         }
 
-        // Pull-to-Refresh обёртка
         SwipeRefresh(
             state = rememberSwipeRefreshState(isRefreshing),
-            onRefresh = {
-                viewModel.loadCharacters(name = query)
-            },
+            onRefresh = { viewModel.refresh() },
             modifier = Modifier.fillMaxSize()
         ) {
             when (state) {
@@ -107,9 +105,27 @@ fun CharacterListScreen(
                             horizontalArrangement = Arrangement.spacedBy(8.dp),
                             verticalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
-                            items(characters) { character ->
+                            items(characters.size) { index ->
+                                val character = characters[index]
                                 CharacterCard(character) {
                                     navController.navigate("character_detail/${character.id}")
+                                }
+
+                                if (index == characters.lastIndex) {
+                                    viewModel.loadNextPage()
+                                }
+                            }
+
+                            if (isAppending) {
+                                item {
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(16.dp),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        CircularProgressIndicator()
+                                    }
                                 }
                             }
                         }

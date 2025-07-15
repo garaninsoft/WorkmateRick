@@ -8,6 +8,7 @@ interface CharacterRepository {
         name: String? = null,
         status: String? = null,
         species: String? = null,
-        gender: String? = null
+        gender: String? = null,
+        page: Int = 1
     ): Flow<List<Character>>
 }
