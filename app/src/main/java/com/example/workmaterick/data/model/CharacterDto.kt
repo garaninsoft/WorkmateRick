@@ -1,5 +1,6 @@
 package com.example.workmaterick.data.model
 
+import com.example.workmaterick.data.local.entity.CharacterEntity
 import com.example.workmaterick.domain.model.Character
 
 data class CharacterDto(
@@ -29,3 +30,12 @@ fun CharacterDto.toDomain(): Character {
         gender = gender
     )
 }
+
+fun CharacterDto.toEntity() = CharacterEntity(
+    id = id,
+    name = name,
+    status = status,
+    species = species,
+    gender = gender,
+    image = image
+)

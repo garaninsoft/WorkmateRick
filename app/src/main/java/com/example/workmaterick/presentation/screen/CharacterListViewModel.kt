@@ -7,9 +7,11 @@ import com.example.workmaterick.data.api.RickAndMortyApi
 import com.example.workmaterick.data.model.toDomain
 import com.example.workmaterick.di.NetworkModule
 import com.example.workmaterick.domain.model.Character
+import com.example.workmaterick.domain.repository.CharacterRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -22,7 +24,8 @@ sealed class UiState {
 @HiltViewModel
 class CharacterListViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val api: RickAndMortyApi
+    private val repository: CharacterRepository
+//    private val api: RickAndMortyApi
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
@@ -56,33 +59,49 @@ class CharacterListViewModel @Inject constructor(
         species: String? = null,
         gender: String? = null
     ) {
-
-        currentFilters = FilterParams(
-            status = status,
-            gender = gender,
-            species = species
-        )
-
-        currentQuery = name
-
-        //currentStatus = status
-
         _uiState.value = UiState.Loading
         viewModelScope.launch {
-            try {
-                val response = api.getAllCharacters(
-                    page = currentPage,
-                    name = name,
-                    status = status,
-                    species = species,
-                    gender = gender
-                )
-                _uiState.value = UiState.Success(response.results.map { it.toDomain() })
-            } catch (e: Exception) {
-                _uiState.value = UiState.Error("Ошибка загрузки: ${e.localizedMessage}")
-            }
+            repository.getCharacters(name, status, species, gender)
+                .catch { e -> _uiState.value = UiState.Error("Ошибка: ${e.localizedMessage}") }
+                .collect { characters ->
+                    _uiState.value = UiState.Success(characters)
+                }
         }
     }
+
+//    fun loadCharacters(
+//        name: String? = null,
+//        status: String? = null,
+//        species: String? = null,
+//        gender: String? = null
+//    ) {
+//
+//        currentFilters = FilterParams(
+//            status = status,
+//            gender = gender,
+//            species = species
+//        )
+//
+//        currentQuery = name
+//
+//        //currentStatus = status
+//
+//        _uiState.value = UiState.Loading
+//        viewModelScope.launch {
+//            try {
+//                val response = api.getAllCharacters(
+//                    page = currentPage,
+//                    name = name,
+//                    status = status,
+//                    species = species,
+//                    gender = gender
+//                )
+//                _uiState.value = UiState.Success(response.results.map { it.toDomain() })
+//            } catch (e: Exception) {
+//                _uiState.value = UiState.Error("Ошибка загрузки: ${e.localizedMessage}")
+//            }
+//        }
+//    }
 }
 
 data class FilterParams(
