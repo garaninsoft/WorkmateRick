@@ -3,9 +3,6 @@ package com.example.workmaterick.presentation.screen
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.workmaterick.data.api.RickAndMortyApi
-import com.example.workmaterick.data.model.toDomain
-import com.example.workmaterick.di.NetworkModule
 import com.example.workmaterick.domain.model.Character
 import com.example.workmaterick.domain.repository.CharacterRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -45,14 +42,6 @@ class CharacterListViewModel @Inject constructor(
         )
     }
 
-    private var currentPage = 1
-
-    private var currentFilters: FilterParams? = null
-    private var currentQuery: String? = null
-//    private var currentStatus: String? = null
-//    private var currentGender: String? = null
-//    private var currentSpecies: String? = null
-
     fun loadCharacters(
         name: String? = null,
         status: String? = null,
@@ -68,44 +57,4 @@ class CharacterListViewModel @Inject constructor(
                 }
         }
     }
-
-//    fun loadCharacters(
-//        name: String? = null,
-//        status: String? = null,
-//        species: String? = null,
-//        gender: String? = null
-//    ) {
-//
-//        currentFilters = FilterParams(
-//            status = status,
-//            gender = gender,
-//            species = species
-//        )
-//
-//        currentQuery = name
-//
-//        //currentStatus = status
-//
-//        _uiState.value = UiState.Loading
-//        viewModelScope.launch {
-//            try {
-//                val response = api.getAllCharacters(
-//                    page = currentPage,
-//                    name = name,
-//                    status = status,
-//                    species = species,
-//                    gender = gender
-//                )
-//                _uiState.value = UiState.Success(response.results.map { it.toDomain() })
-//            } catch (e: Exception) {
-//                _uiState.value = UiState.Error("Ошибка загрузки: ${e.localizedMessage}")
-//            }
-//        }
-//    }
 }
-
-data class FilterParams(
-    val status: String? = null,
-    val species: String? = null,
-    val gender: String? = null
-)

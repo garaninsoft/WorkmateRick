@@ -33,7 +33,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
@@ -60,85 +59,6 @@ fun CharacterListScreen(
                 .fillMaxWidth()
                 .padding(8.dp)
         )
-//
-//        // ========== FILTER: STATUS ==========
-//        var expandedStatus by remember { mutableStateOf(false) }
-//        val statusOptions = listOf(null, "alive", "dead", "unknown")
-//        var selectedStatus by remember { mutableStateOf<String?>(null) }
-//
-//        var selectedSpecies by remember { mutableStateOf<String?>(null) }
-//        var selectedGender by remember { mutableStateOf<String?>(null) }
-//
-//        FilterDropdown(
-//            label = "Статус",
-//            selected = selectedStatus,
-//            options = statusOptions,
-//            expanded = expandedStatus,
-//            onExpandChange = { expandedStatus = it },
-//            onSelected = {
-//                selectedStatus = it
-//                viewModel.loadCharacters(
-//                    name = query,
-//                    status = it,
-//                    gender = selectedGender,
-//                    species = selectedSpecies
-//                )
-//            }
-//        )
-//
-//// ========== FILTER: GENDER ==========
-//        var expandedGender by remember { mutableStateOf(false) }
-//        val genderOptions = listOf(null, "male", "female", "genderless", "unknown")
-//
-//        FilterDropdown(
-//            label = "Пол",
-//            selected = selectedGender,
-//            options = genderOptions,
-//            expanded = expandedGender,
-//            onExpandChange = { expandedGender = it },
-//            onSelected = {
-//                selectedGender = it
-//                viewModel.loadCharacters(
-//                    name = query,
-//                    status = selectedStatus,
-//                    gender = it,
-//                    species = selectedSpecies
-//                )
-//            }
-//        )
-//
-//// ========== FILTER: SPECIES ==========
-//        var expandedSpecies by remember { mutableStateOf(false) }
-//        val speciesOptions = listOf(null, "Human", "Alien", "Humanoid", "Robot", "Animal")
-//
-//        FilterDropdown(
-//            label = "Вид",
-//            selected = selectedSpecies,
-//            options = speciesOptions,
-//            expanded = expandedSpecies,
-//            onExpandChange = { expandedSpecies = it },
-//            onSelected = {
-//                selectedSpecies = it
-//                viewModel.loadCharacters(
-//                    name = query,
-//                    status = selectedStatus,
-//                    gender = selectedGender,
-//                    species = it
-//                )
-//            }
-//        )
-
-//        navController.navigate(
-//            "character_list" +
-//                    "?status=${selectedStatus.orEmpty()}" +
-//                    "&gender=${selectedGender.orEmpty()}" +
-//                    "&species=${selectedSpecies.orEmpty()}"
-//        ) {
-//            popUpTo("character_list") { inclusive = true } // чтобы заменить экран, не возвращаться назад
-//        }
-
-
-
         Button(
             onClick = { navController.navigate("filter_screen") },
             modifier = Modifier
@@ -155,7 +75,7 @@ fun CharacterListScreen(
                 viewModel.loadCharacters(name = query)
             },
             modifier = Modifier.fillMaxSize()
-        ){
+        ) {
             when (state) {
                 is UiState.Loading -> {
                     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -188,7 +108,7 @@ fun CharacterListScreen(
                             verticalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
                             items(characters) { character ->
-                                CharacterCard(character){
+                                CharacterCard(character) {
                                     navController.navigate("character_detail/${character.id}")
                                 }
                             }
@@ -209,9 +129,11 @@ fun FilterDropdown(
     onExpandChange: (Boolean) -> Unit,
     onSelected: (String?) -> Unit
 ) {
-    Column(modifier = Modifier
-        .fillMaxWidth()
-        .padding(horizontal = 8.dp, vertical = 4.dp)) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 8.dp, vertical = 4.dp)
+    ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
